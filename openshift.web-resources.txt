@@ -1,0 +1,72 @@
+[openshift learning]
++++
+<openshift, learn, learning>
+https://learn.openshift.com/
+- Introduction
+  - [x] Getting started with openshift for developers
+  - [x] Logging in to an openshift cluster
+  - [x] Developing with odo
+  - [x] Deploying applications from images
+  - [x] Deploying applications from source
+  - [x] Using the CLI to manage resource objects
+  - [ ] Connecting to a database using port forwarding
+  - [ ] Transferring files in and out of containers
+  - [ ] Exploring and using metrics and HPAs
+  - [ ] Introduction to federation V2
+- Building applications on openshift
+  - [ ] Developing with Quarkus
+  - [ ] Eclipse Vert.x development
+  - [ ] Spring and Spring Boot development
+  - [ ] Java EE 8 Development
+  - [ ] Application Messaging with Openshift
+  - [ ] Thorntail development
+  - [ ] Red Hat data grid development
+  - [ ] Node.js development
+  - [ ] JBoss BRMS Loand application demo
+  - [ ] Red Hat Decision Manager Loan application demo
+  - [ ] Red Hat Decision Manager DMN introduction
+  - [ ] Java EE Batch Processing with openshift, wildfly & JBeret
+  - [ ] Debezium development
+  - [ ] Hello! Fuse - getting started
+- Subsystems, components and internals
+  - [ ] Linux Container Internals 2.0 - Lab 1: Introduction to Containers
+  - [ ] Linux Container Internals 2.0 - Lab 2: Container Images
+  - [ ] Linux Container Internals 2.0 - Lab 3: Container Registries
+  - [ ] Linux Container Internals 2.0 - Lab 4: Container Hosts
+  - [ ] Linux Container Internals 2.0 - Lab 5: Container Orchestration
+  - [ ] Linux Container Internals 2.0 - Lab 6: Container Standards
+  - [ ] Linux Container Internals 2.0 - Lab 7: Container Tools Ecosystem
+- Openshift playgrounds
+  - [ ] Openshift 3.6 Playground
+  - [ ] Openshift 3.9 Playground
+  - [ ] Openshift 3.11 Playground
+- Service mesh workshop with istio
+  - [ ] Istio 1.0x workshop: Istio Introduction
+  - [ ] Istio 1.0x workshop: Deploy microservices
+  - [ ] Istio 1.0x workshop: Monitoring and Tracing
+  - [ ] Istio 1.0x workshop: Simple Routing
+  - [ ] Istio 1.0x workshop: Advanced RouteRules
+  - [ ] Istio 1.0x workshop: Fault Injection
+  - [ ] Istio 1.0x workshop: Circuit Breaker
+  - [ ] Istio 1.0x workshop: Egress
+  - [ ] Istio 1.0x Advanced: Observing with kiali
+  - [ ] Istio 1.0x Advanced: Mutual TLS
+- Building operators on openshift
+  - [ ] Kubernetes API fundamentals
+  - [ ] Etcd operator
+  - [ ] Operator SDK with Go
+  - [ ] Operator Lifecycle Manager
+  - [ ] Ansible Refresher
+  - [ ] Ansible kubernetes modules
+  - [ ] Ansible operator overview
+  - [ ] Operator SDK with Helm
+
++++
+<cdk, container developer kit>
+https://developers.redhat.com/products/cdk/overview/
+
++++
+
+<kubernetes, k8s>
+https://developers.redhat.com/topics/kubernetes/
++++
