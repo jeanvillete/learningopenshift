@@ -17,6 +17,16 @@ https://learn.openshift.com/
   - [ ] Developing with Quarkus
   - [ ] Eclipse Vert.x development
   - [ ] Spring and Spring Boot development
+    - [ ] Getting Started with Spring; Basic Introduction to Spring on Red Hat OpenShift
+    - [ ] Spring MVC; Model/View/Controller pattern with Spring's MVC framework
+    - [ ] Spring REST; RESTful applications using Spring Rest
+    - [ ] Spring Data with JPA/Hibernate; Database Integration in Spring Boot on OpenShift
+    - [ ] Spring Messaging with Red Hat AMQ; Modern Distributed microservices using Red Hat messaging
+    - [ ] Testing Spring Applications with Arquillian Cube; Integration testing in a containerzied
+    - [ ] Externalized Configuration; Externalized Configuration and Health Checks
+    - [ ] Service Discovery and Load Balancing
+    - [ ] Fault Tolerance and Resiliency; Circuit Breaking
+    - [ ] Monitoring Spring Applications on OpenShift; Using Spring monitoring tools on OpenShift
   - [ ] Java EE 8 Development
   - [ ] Application Messaging with Openshift
   - [ ] Thorntail development
@@ -62,6 +72,18 @@ https://learn.openshift.com/
   - [ ] Operator SDK with Helm
 
 +++
+
+https://developers.redhat.com/launch/login
+Create/Import your application, built and deployed on OpenShift.
+
++++
+
+https://snowdrop.me/
+Path to develop Cloud Native Spring Application on Openshift/Kubernetes
+Create Spring Boot applications with all the benefits, best practices, and established patterns of the cloud environement.
+
++++
+
 <cdk, container developer kit>
 https://developers.redhat.com/products/cdk/overview/
 
@@ -69,4 +91,5 @@ https://developers.redhat.com/products/cdk/overview/
 
 <kubernetes, k8s>
 https://developers.redhat.com/topics/kubernetes/
+
 +++
