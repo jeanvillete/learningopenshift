@@ -61,12 +61,12 @@ $ oc status
 $ oc get pods
 
 # to create an interactive shell within the container running the database, we do it via '$ oc rsh' command
-$ POD=`oc get pods --selector app=database -o custome-columns=name:.metadata.name --no-headers`
+$ POD=`oc get pods --selector app=database -o custom-columns=name:.metadata.name --no-headers`
 $ echo $POD
 $ oc rsh $POD
 
 # in order to perform a command on the remote running container
-$ POD=`oc get pods --selector app=database -o custome-columns=name:.metadata.name --no-headers`
+$ POD=`oc get pods --selector app=database -o custom-columns=name:.metadata.name --no-headers`
 # executing kill command on the running container
 $ oc rsh $POD kill -HUP 1
 
