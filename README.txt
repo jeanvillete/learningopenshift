@@ -60,11 +60,26 @@ $ oc status
 # return all running pods, but even those failed ones are brought to assist with throubleshooting
 $ oc get pods
 
+# to create an interactive shell within the container running the database, we do it via '$ oc rsh' command
+$ POD=`oc get pods --selector app=database -o custome-columns=name:.metadata.name --no-headers`
+$ echo $POD
+$ oc rsh $POD
+
+# in order to perform a command on the remote running container
+$ POD=`oc get pods --selector app=database -o custome-columns=name:.metadata.name --no-headers`
+# executing kill command on the running container
+$ oc rsh $POD kill -HUP 1
+
 # return all objects dc=DeploymentConfigs, svc=Services, route=Routes
 $ oc get dc,svc,route
 
 # get a list of all the different resource object types
 $ oc get
+
+# query only for running Pods
+$ oc get pods --selector app=myAppLabel -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}'
+$ pod() { local selector=$1; local query='?(@.status.phase=="Running")'; oc get pods --selector $selector -o jsonpath="{.items[$query].metadata.name}"; }
+$ pod selectorLabelKey=selectorLabelValue
 
 # it is also possible to show all existing objects available
 $ oc get all
@@ -86,6 +101,13 @@ $ oc new-app --search openshiftkatacoda/blog-django-py
 
 # deploying with facility s2i for a python application hosted on a remote repository (github)
 $ oc new-app python:latest~https://github.com/openshift-katacoda/blog-django-py --name blog
+
+# creating a postgres database pod instance (with no storage set for persistent data)
+$ oc new-app postgresql-ephemeral --name database --param DATABASE_SERVICE_NAME=database --param POSTGRESQL_DATABASE=sampledb --param POSGRESQL_USER=username --param POSGRESQL_PASSWORD=password
+
+# similar to the new "$ oc new-app" command but a bit simpler, the "$ oc run" command below runs an image avoiding create aditional objects, such as service:ClusterIp. rather, the "$ oc run" command creates only the "Deployment config" alongside a pod for getting the contaienr image to be running
+# run a dummy application pod which can be used to mount persistent volumes to facilitate copying files to a persistent volume
+$ oc run dummy --image centos/httpd-24-centos7
 
 # creating a Route object for the Service ClusterIP "hello-openshift"
 $ oc expose svc hello-openshift
@@ -179,6 +201,45 @@ $ oc logs bc/myBuildConfig --follow
 $ oc edit <type>/<object name>
 $ oc edit <type>/<object name> -o yaml
 $ oc edit <type>/<object name> -o json
+
+# monitoring progress of deployments
+# the command will exit once the deployment has completed and the web application is ready
+$ oc rollout status <type>/<object name>
+$ oc rollout status dc/appName
+
+# when a web application is made visible outside of the OpenShift cluster a Route is created. This enables a user to use a URL to access the web application from a web browser.
+# a route is only usually used for web applications which use the HTTP protocol.
+# a route cannot be used to expose a database for example, as they would typically use their own distinct protocol and routes would not be able to work with the database protocol.
+# to setup port forwarding between a local machine and the database running on OpenShift you use the oc port-forward command
+# remember the '$ oc port-forward' process still running on background, it can be checked either via '$ ps aux' and '$ jobs'
+$ oc port-forward <pod-name> 
+$ oc port-forward <pod-name> :<remote-pod-port>
+$ oc port-forward <pod-name> <local-port>:<remote-pod-port>
+
+# synchronize/copy files from/to remote running container
+# copying file from remote container to local machine, on the current directory
+$ oc rsync <pod-full-name>:/remote/pod/directory/file.txt .
+# copying remote directory to the current machine on local directory
+$ oc rsync <pod-full-name>:/remote/pod/directory .
+# copying the contents of remote directory to the local "uploads" directory
+$ oc rsync <pod-full-name>:/remote/pod/directory/. ./uploads
+# copying a single file from local machine to the remote running container
+$ oc rsync . <pod-full-name>:/remote/pod/directory --exclude=* --include=fileToBeUploaded.txt --no-perms
+# for synchronization, where the oc copies from/to remote automatically, the "--watch" can be provided, this way a running process on background will keep live until be killed applying this synchronization
+$ oc rsync currentLocalDirectory/. <pod-full-name>:/remote/pod/directory --no-perms --watch &
+# specifying a strategy for copying resources from local host to the remote running container
+$ oc rsync currentLocalDirectory/. <pod-full-name>:/remote/pod/directory --stratagy=tar
+# copy content from remote to the local host, with directories/files in the local directory which are not found in the pod being deleted
+$ oc rsync <pod-full-name>:/remote/pod/directory currentLocalDirectory/. --delete
+
+# creating/claim a new volume and mounting it to a deployment config
+$ oc set volume dc/myDeploymentConfigName --add --name=deploymentConfigMountName --claim-name=pvcStorageName --type pvc --claim-size=1G --mount-path /mnt/podMountDirectory
+
+# unmounting the volume from a running container
+$ oc set volume dc/myDeploymentConfigName --remove --name=deploymentConfigMountName
+
+# mounting an already created volume pvc
+$ oc set volume dc/myDeploymentConfigName --add --name=deploymentConfigMountName --claim-name=pvcStorageName --mount-path /mnt
 
 # odo samples; https://github.com/openshift/odo
 $ odo login -u myUserName -p myCleanPass

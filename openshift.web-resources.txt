@@ -9,8 +9,8 @@ https://learn.openshift.com/
   - [x] Deploying applications from images
   - [x] Deploying applications from source
   - [x] Using the CLI to manage resource objects
-  - [ ] Connecting to a database using port forwarding
-  - [ ] Transferring files in and out of containers
+  - [x] Connecting to a database using port forwarding
+  - [x] Transferring files in and out of containers
   - [ ] Exploring and using metrics and HPAs
   - [ ] Introduction to federation V2
 - Building applications on openshift
