@@ -17,7 +17,7 @@ https://learn.openshift.com/
   - [ ] Developing with Quarkus
   - [ ] Eclipse Vert.x development
   - [ ] Spring and Spring Boot development
-    - [ ] Getting Started with Spring; Basic Introduction to Spring on Red Hat OpenShift
+    - [x] Getting Started with Spring; Basic Introduction to Spring on Red Hat OpenShift
     - [ ] Spring MVC; Model/View/Controller pattern with Spring's MVC framework
     - [ ] Spring REST; RESTful applications using Spring Rest
     - [ ] Spring Data with JPA/Hibernate; Database Integration in Spring Boot on OpenShift
