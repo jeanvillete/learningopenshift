@@ -202,6 +202,9 @@ $ oc edit <type>/<object name>
 $ oc edit <type>/<object name> -o yaml
 $ oc edit <type>/<object name> -o json
 
+# for starting/triggering a manual deploy
+$ oc rollout dc/<object name>
+
 # monitoring progress of deployments
 # the command will exit once the deployment has completed and the web application is ready
 $ oc rollout status <type>/<object name>

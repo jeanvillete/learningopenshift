@@ -18,10 +18,10 @@ https://learn.openshift.com/
   - [ ] Eclipse Vert.x development
   - [ ] Spring and Spring Boot development
     - [x] Getting Started with Spring; Basic Introduction to Spring on Red Hat OpenShift
-    - [ ] Spring MVC; Model/View/Controller pattern with Spring's MVC framework
-    - [ ] Spring REST; RESTful applications using Spring Rest
-    - [ ] Spring Data with JPA/Hibernate; Database Integration in Spring Boot on OpenShift
-    - [ ] Spring Messaging with Red Hat AMQ; Modern Distributed microservices using Red Hat messaging
+    - [x] Spring MVC; Model/View/Controller pattern with Spring's MVC framework
+    - [x] Spring REST; RESTful applications using Spring Rest
+    - [x] Spring Data with JPA/Hibernate; Database Integration in Spring Boot on OpenShift
+    - [x] Spring Messaging with Red Hat AMQ; Modern Distributed microservices using Red Hat messaging
     - [ ] Testing Spring Applications with Arquillian Cube; Integration testing in a containerzied
     - [ ] Externalized Configuration; Externalized Configuration and Health Checks
     - [ ] Service Discovery and Load Balancing

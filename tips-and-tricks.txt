@@ -1,0 +1,2 @@
+# in case your browser isn't able to copy log/terminal data from openshift's log/terminal pods
+Object.values( $( 'span[data-obj-id]' ).map( ( index, element ) => $( element ).text() ) ).map( ( i, m ) => new String( i ).trim() ).join( "\n" )
