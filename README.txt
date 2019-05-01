@@ -260,3 +260,132 @@ $ odo push
 $ odo link backend --component frontend --port 8080
 $ odo url create frontend
 $ odo url list
+
+++
+
+[PROCESS FOR DEPLOYING APPLICATION FROM Dockerfile, THE HARD WAY TO DO SO!]
+
+# create/release the Dockerfile content to be used as base for the image to be deployed on OpenShift
+$ cat << 'EOF' > Dockerfile
+FROM docker-registry.com/openshift3/hello-openshift
+MAINTAINER paas@email.com
+VOLUME ["/config"]
+
+EXPOSE 8080
+EOF
+
+# exposing the Dockerfile content on a variabled named "dockercontent"
+$ dockercontent=$( cat ./Dockerfile )
+
+# issuing the command to create the BuildConfig/bc object on OpenShift
+## it executes also the build, getting at the end the resulting ImageStream/is named as same as BuildConfig/bc "my-sample-build-hello-os" object, it is then ready to be deployed
+$ oc new-build --name my-sample-build-hello-os -D $"$dockercontent"
+
+# (OPTIONAL) it is optional issue the command to start-build, or only required in case it was not triggered automatically
+## in case the Dockerfile content has changed for any reason, it can be provided also on start-build command as below;
+$ oc start-build my-sample-build-hello-os --from-file=./Dockerfile --follow
+
+# once the resulting ImageStream/is is available, we can invoke the command to create the application, which comprises objects "DeploymentConfig/dc" and a corresponding "Service/svc"
+## the parameter "my-sample-build-hello-os" provided below refers the ImageStream/is object creted at previous step
+$ oc new-app my-sample-build-hello-os
+
+# in order to expose, or in other words, create a route for the just created app;
+$ oc expose svc my-sample-build-hello-os
+
+++
+
+[CREATING APP BASED ON AN AVAILABLE IMAGE ON EXTERNAL/INTERNAL REGISTRY]
+
+# it would be ok provide for the "$ oc new-app" command an ImageStream/is name which could be found on both internal or external registry
+## in case it is found on the external registry, it migh be a good idea to provide the full name of the image
+$ oc new-app docker-registry.com/openshift3/hello-openshift
+
+++
+
+[GETTING A ENTIRE/SINGLE DEPLOYMENT PROCESS AT ONCE]
+
+# exporting the json content for creating the BuildConfig/bc object
+## the resulting json can be deployed on openshift via WebConsole or through a pipe for the command line "$ oc create -f -"
+## also it executes the build getting at the end the resulting ImageStream/is object
+$ oc new-build --name my-sample-build-hello-os -D $'FROM docker-registry.com/openshift3/hello-openshift\nVOLUME ["/config"]' -o json
+
+# (OPTIONAL) it is optional issue the command to start-build, or only required in case it was not triggered automatically
+$ oc start-build my-sample-build-hello-os --follow
+
+# once the resulting ImageStream/is is available, we can invoke the command to create 
+## this command prints the objects "DeploymentConfig/dc" and a corresponding "Service/svc"
+## the resulting json can be deployed on openshift via WebConsole or through a pipe for the command line "$ oc create -f -"
+$ oc new-app my-sample-build-hello-os -o json
+
+# in order to expose, or in other words, create a route for the just created app;
+## the resulting json can be deployed on openshift via WebConsole or through a pipe for the command line "$ oc create -f -"
+$ oc expose svc my-sample-build-hello-os -o json
+
+## after retrieving all the contents above, we are able to get all the objects together in a single JSON/YAML content, so with this whole we can deploy the entire application on openshift at once
+
+++
+
+[CREATING SECRETS VIA WEB CONSOLE, FOR SOURCE TO IMAGE STRATEGY]
+- Project X -> Resources -> Secrets -> [btn: Create Secret]
+	- Secret Type: Source Secret
+	- Secret Name: stash-secret
+	- Authentication Type: SSH Key
+	- SSH Private Key: -- provide the private key on the pem format --
+
+++
+
+[CREATING DEPLOYMENT WITH S2I APPROACH]
+
+# command to create a new build, but for this a Builder Image is going to be ran, responsible for get the source code from the remote git repository, build it (maybe via maven), and at the end build a Docker image containing the java base image alongside the built java code
+## the "-o json" at the end of the command says that the code is not to get running at the moment, but actually a json content is going to get printed on the stout in order to get deployed later on openshift, via "$ oc create -f -" or via Web Console
+$ oc new-build --name s2i-slow openshift/java-s2i~ssh://git@github:7999/~jean-a.villete.com/java-springboot-example.git --to java:0.1 -o json
+
+# the same as above, but specifying a "branch name"
+## the "-o json" at the end of the command says that the code is not to get running at the moment, but actually a json content is going to get printed on the stout in order to get deployed later on openshift, via "$ oc create -f -" or via Web Console
+$ oc new-build --name s2i-slow openshift/java-s2i~ssh://git@github:7999/~jean-a.villete.com/java-springboot-example.git#my-branch-name --to java:0.1 -o json
+
+# the same as above, but specifying a "path variable" BUILD_NO
+## the "-o json" at the end of the command says that the code is not to get running at the moment, but actually a json content is going to get printed on the stout in order to get deployed later on openshift, via "$ oc create -f -" or via Web Console
+$ oc new-build --name s2i-slow openshift/java-s2i~ssh://git@github:7999/~jean-a.villete.com/java-springboot-example.git#my-branch-name -e BUILD_NO=41 --to java:0.2 -o json
+
+.../.s2i/bin/
+	assemble
+		building application
+		---
+		#!/bin/bash
+
+		DEPLOYMENTS_DIR="/deployments"
+
+		mkdir -p $DEPLOYMENTS_DIR
+		curl -Lk https://artifactory.com/artifactory/Mvn_repositories/paas/fabric-java-sample/1.0.$BUILD_NO/fabric-java-sample-1.0.$BUILD_NO.jar -o $DEPLOYMENTS_DIR/fabric-java-sample.jar
+		echo "... done"
+		---
+	artifacts | save-artifacts
+		complex build
+	usage
+		show information for other people who uses the image
+	run
+		script used to run the application
+		
+++
+
+# in this case, a Dockerfile is provided alongside the code residing on the remote repository
+# and this Dockerfile would tell how the docker image should be composed
+$ oc new-build --name docker-build openshift/rhel~ssh://git@github:7999/~jean-a.villete.com/fabric-docker2image-example.git --strategy=docker --to java -o json
+
+++
+
+[CREATING BUILD DEPLOYMENT BASED ON LOCAL DOCKER]
+
+# just do create a BuildConfig/bc object on openshift, but it doesn't perform any execution over there at first time
+$ oc new-build --name fromdocker --binary
+
+# the build is going to be executed but considering local files
+## it creates a ImageStream/is at the end with named as the same as the BuildConfig/bc name
+$ oc-start-build fromdocker --from-file=./Dockerfile --follow
+
+# creating a DeploymentConfig/dc along with a Service/svc named as the "--name" param provided on "$ oc new-app" below
+$ oc new-app --name mynewapp -i fromdocker:latest
+
+# creating the route in order to expose the "svc mynewapp" created above to the out side world
+$ oc expose svc mynewapp
