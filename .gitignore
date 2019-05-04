@@ -1,2 +1,5 @@
-*.swp
-*.iml
+**/*.swp
+**/*.iml
+**/.idea/
+**/target/
+**/.mvn/
