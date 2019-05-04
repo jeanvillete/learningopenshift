@@ -1,0 +1,221 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "apps.openshift.io/v1",
+            "kind": "DeploymentConfig",
+            "metadata": {
+                "labels": {
+                    "app": "openjdk18-web-basic-s2i",
+                    "application": "sample-springboot-app",
+                    "template": "openjdk18-web-basic-s2i",
+                    "xpaas": "1.4.16"
+                },
+                "name": "sample-springboot-app"
+            },
+            "spec": {
+                "replicas": 1,
+                "revisionHistoryLimit": 10,
+                "selector": {
+                    "deploymentConfig": "sample-springboot-app"
+                },
+                "strategy": {
+                    "rollingParams": {
+                        "timeoutSeconds": 3600
+                    },
+                    "type": "Rolling"
+                },
+                "template": {
+                    "metadata": {
+                        "labels": {
+                            "application": "sample-springboot-app",
+                            "deploymentConfig": "sample-springboot-app"
+                        },
+                        "name": "sample-springboot-app"
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "image": "",
+                                "imagePullPolicy": "IfNotPresent",
+                                "name": "sample-springboot-app",
+                                "ports": [
+                                    {
+                                        "containerPort": 8778,
+                                        "name": "jolokia",
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8080,
+                                        "name": "http",
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8443,
+                                        "name": "https",
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "resources": {}
+                            }
+                        ]
+                    }
+                },
+                "triggers": [
+                    {
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "sample-springboot-app"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "sample-springboot-app:latest"
+                            }
+                        },
+                        "type": "ImageChange"
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "build.openshift.io/v1",
+            "kind": "BuildConfig",
+            "metadata": {
+                "labels": {
+                    "app": "openjdk18-web-basic-s2i",
+                    "application": "sample-springboot-app",
+                    "template": "openjdk18-web-basic-s2i",
+                    "xpaas": "1.4.16"
+                },
+                "name": "sample-springboot-app"
+            },
+            "spec": {
+                "output": {
+                    "to": {
+                        "kind": "ImageStreamTag",
+                        "name": "sample-springboot-app:latest"
+                    }
+                },
+                "postCommit": {},
+                "resources": {},
+                "runPolicy": "Serial",
+                "source": {
+                    "contextDir": "sample-springboot",
+                    "git": {
+                        "ref": "master",
+                        "uri": "https://github.com/jeanvillete/learningopenshift"
+                    },
+                    "type": "Git"
+                },
+                "strategy": {
+                    "sourceStrategy": {
+                        "forcePull": true,
+                        "from": {
+                            "kind": "ImageStreamTag",
+                            "name": "java:8",
+                            "namespace": "openshift"
+                        }
+                    },
+                    "type": "Source"
+                },
+                "successfulBuildsHistoryLimit": 5,
+                "triggers": [
+                    {
+                        "type": "ConfigChange"
+                    },
+                    {
+                        "github": {
+                            "secret": "DDvVsH8w"
+                        },
+                        "type": "GitHub"
+                    },
+                    {
+                        "generic": {
+                            "secret": "rPtdPN4n"
+                        },
+                        "type": "Generic"
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "image.openshift.io/v1",
+            "kind": "ImageStream",
+            "metadata": {
+                "labels": {
+                    "app": "openjdk18-web-basic-s2i",
+                    "application": "sample-springboot-app",
+                    "template": "openjdk18-web-basic-s2i",
+                    "xpaas": "1.4.16"
+                },
+                "name": "sample-springboot-app"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "description": "The application's http port."
+                },
+                "labels": {
+                    "app": "openjdk18-web-basic-s2i",
+                    "application": "sample-springboot-app",
+                    "template": "openjdk18-web-basic-s2i",
+                    "xpaas": "1.4.16"
+                },
+                "name": "sample-springboot-app"
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "port": 8080,
+                        "protocol": "TCP",
+                        "targetPort": 8080
+                    }
+                ],
+                "selector": {
+                    "deploymentConfig": "sample-springboot-app"
+                },
+                "type": "ClusterIP"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "apiVersion": "route.openshift.io/v1",
+            "kind": "Route",
+            "metadata": {
+                "annotations": {
+                    "openshift.io/host.generated": "true"
+                },
+                "labels": {
+                    "app": "openjdk18-web-basic-s2i",
+                    "application": "sample-springboot-app",
+                    "template": "openjdk18-web-basic-s2i",
+                    "xpaas": "1.4.16"
+                },
+                "name": "sample-springboot-app"
+            },
+            "spec": {
+                "port": {
+                    "targetPort": 8080
+                },
+                "to": {
+                    "kind": "Service",
+                    "name": "sample-springboot-app"
+                }
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": "",
+        "selfLink": ""
+    }
+}
